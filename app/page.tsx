@@ -24,6 +24,7 @@ export default function Home() {
   const [toast, setToast] = useState<string | null>(null);
   const [recipients, setRecipients] = useState<Sister[]>(sisters);
   const [wishes, setWishes] = useState<Sister[]>([]);
+  const [wishesLoaded, setWishesLoaded] = useState(false);
   const [databaseError, setDatabaseError] = useState<string | null>(null);
   const [writingRecipient, setWritingRecipient] = useState<Sister | null>(null);
   const savedWishCount = wishes.length;
@@ -44,8 +45,12 @@ export default function Home() {
         const data = await response.json();
         const allRecipients: Sister[] = data.recipients;
         if (disposed) return;
+        setRecipients(allRecipients);
+        setWishes(data.wishes ?? []);
+        setWishesLoaded(true);
         let migrationFailed = false;
-        for (const saved of readSavedRecipients()) {
+        const legacyRecipients = readSavedRecipients();
+        for (const saved of legacyRecipients) {
           if (disposed) return;
           try {
             const imported = await saveRecipient(saved);
@@ -58,9 +63,12 @@ export default function Home() {
         }
         const params = new URLSearchParams(window.location.search);
         const linked = recipientFromLink(); // Preserve old long links.
-        const fresh = await fetch("/api/wishes", { cache: "no-store" });
-        if (!fresh.ok) throw new Error("Chưa tải được danh sách lời chúc.");
-        const latest = await fresh.json();
+        let latest = data;
+        if (legacyRecipients.length) {
+          const fresh = await fetch("/api/wishes", { cache: "no-store" });
+          if (!fresh.ok) throw new Error("Chưa tải được danh sách lời chúc.");
+          latest = await fresh.json();
+        }
         if (disposed) return;
         const allWishes: Sister[] = latest.wishes ?? [];
         const match = linked ?? (params.has("wishId") ? allWishes.find((wish) => String(wish.wishId) === params.get("wishId") && wish.slug === params.get("to")) : (latest.recipients as Sister[]).find((recipient) => recipient.slug === params.get("to")));
@@ -90,7 +98,7 @@ export default function Home() {
         const response = await fetch("/api/wishes", { cache: "no-store" });
         if (!response.ok) return;
         const data = await response.json();
-        if (!disposed) { setRecipients(data.recipients); setWishes(data.wishes ?? []); }
+        if (!disposed) { setRecipients(data.recipients); setWishes(data.wishes ?? []); setWishesLoaded(true); setDatabaseError(null); }
       } catch { /* Keep the last loaded wishes available while offline. */ }
       finally { inFlight = false; }
     };
@@ -101,6 +109,7 @@ export default function Home() {
 
   const createRecipient = async (recipient: Sister) => {
     const saved = await saveRecipient(recipient);
+    setWishesLoaded(true);
     setWishes((current) => [saved, ...current.filter((wish) => wish.wishId !== saved.wishId)]);
     setRecipients((current) => current.some((item) => item.slug === saved.slug) ? current.map((item) => item.slug === saved.slug ? saved : item) : [...current, saved]);
     setWritingRecipient(null);
@@ -145,7 +154,7 @@ export default function Home() {
         {photos.length > 0 ? <PhotoSlideshowSection /> : <HeaderSection />}
 
         {databaseError && <p className="database-error" role="alert">{databaseError}</p>}
-        <AllWishesSection wishes={wishes} onViewWish={setSelectedSister} />
+        <AllWishesSection wishes={wishes} onViewWish={setSelectedSister} loading={!wishesLoaded && !databaseError} unavailable={!wishesLoaded && Boolean(databaseError)} />
         <SistersSection sisters={recipients} onViewWish={viewWish} />
         <FooterSection />
       </main>

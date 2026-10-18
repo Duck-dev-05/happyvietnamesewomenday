@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Avatar from "./Avatar";
 import { downloadPostcard } from "@/app/lib/downloadPostcard";
 import type { Sister } from "@/app/data/sisters";
-import { copyWishText, personalWishMessage, personalWishUrl } from "@/app/lib/shareWish";
+import { copyWishText, personalWishUrl } from "@/app/lib/shareWish";
 
 interface MemberModalProps {
   sister: Sister | null;
@@ -60,9 +60,9 @@ export default function MemberModal({ sister, onClose, onToast }: MemberModalPro
   const pageUrl = typeof window === "undefined" ? "" : personalWishUrl(sister);
 
   const firstName = sister.name.split(" ").slice(-1)[0];
-  const shareText = typeof window === "undefined" ? "" : personalWishMessage(sister);
+
   const encodedUrl = encodeURIComponent(pageUrl);
-  const encodedText = encodeURIComponent(shareText);
+  const encodedText = encodeURIComponent(pageUrl);
 
   const copyToClipboard = async (text: string, message: string) => {
     try {
@@ -77,19 +77,19 @@ export default function MemberModal({ sister, onClose, onToast }: MemberModalPro
   const sendWish = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: `Lời chúc 20/10 dành cho ${sister.name}`, text: shareText });
+        await navigator.share({ title: `Lời chúc 20/10 dành cho ${sister.name}`, url: pageUrl });
         return;
       } catch (reason) {
         if (reason instanceof DOMException && reason.name === "AbortError") return;
       }
     }
-    await copyToClipboard(shareText, "Đã sao chép lời chúc và link riêng. Dán vào Zalo hoặc Messenger để gửi nhé 💌");
+    await copyToClipboard(pageUrl, "Đã sao chép link riêng. Dán vào Zalo hoặc Messenger để gửi nhé 💌");
   };
 
   const shareLinks = [
     { label: "Messenger", icon: "💬", href: "fb-messenger://share?link=" + encodedUrl },
     { label: "Zalo", icon: "🔷", href: "https://social.zalo.me/share?url=" + encodedUrl },
-    { label: "Telegram", icon: "✈️", href: "https://t.me/share/url?url=" + encodedUrl + "&text=" + encodedText },
+    { label: "Telegram", icon: "✈️", href: "https://t.me/share/url?url=" + encodedUrl },
     { label: "WhatsApp", icon: "🟢", href: "https://wa.me/?text=" + encodedText },
     { label: "SMS", icon: "📲", href: "sms:?&body=" + encodedText },
     { label: "Facebook", icon: "👍", href: "https://www.facebook.com/sharer/sharer.php?u=" + encodedUrl },
@@ -185,7 +185,7 @@ export default function MemberModal({ sister, onClose, onToast }: MemberModalPro
             onClick={sendWish}
             className="button-primary mt-5 w-full"
           >
-            {"💌 Gửi lời chúc cho " + firstName}
+            {"🔗 Gửi link cho " + firstName}
           </button>
           <div className="wish-share-actions">
             <button type="button" disabled={exporting} aria-busy={exporting} onClick={async () => {
@@ -194,8 +194,7 @@ export default function MemberModal({ sister, onClose, onToast }: MemberModalPro
               catch { onToast("Chưa tải được thiệp. Vui lòng thử lại."); }
               finally { setExporting(false); }
             }}>{exporting ? "Đang tạo thiệp…" : "Tải thiệp PNG ↓"}</button>
-            <button type="button" onClick={() => copyToClipboard(shareText, "Đã sao chép lời chúc kèm link riêng 💌")}>Sao chép lời chúc + link</button>
-            <button type="button" onClick={() => copyToClipboard(pageUrl, "Đã sao chép link riêng 💕")}>Chỉ sao chép link</button>
+            <button type="button" onClick={() => copyToClipboard(pageUrl, "Đã sao chép link riêng 💕")}>Sao chép link</button>
           </div>
           <p className="share-help">Chọn ứng dụng và người nhận để gửi. Hoặc sao chép rồi dán vào cuộc trò chuyện của bạn.</p>
           <button type="button" className="button-text mt-3" aria-expanded={showShare} aria-controls="wish-share-options" onClick={() => setShowShare((value) => !value)}>{showShare ? "Ẩn tùy chọn chia sẻ" : "Thêm cách chia sẻ"}</button>
@@ -242,12 +241,12 @@ export default function MemberModal({ sister, onClose, onToast }: MemberModalPro
                 ))}
                 <button
                   onClick={() =>
-                    copyToClipboard(shareText, "Đã sao chép lời chúc! Dán và gửi cho " + firstName + " nha 💌")
+                    copyToClipboard(pageUrl, "Đã sao chép link riêng")
                   }
                   className="flex flex-col items-center gap-1 py-2.5 rounded-xl bg-white border border-rose-100 text-rose-600 hover:border-rose-300 hover:shadow-md hover:-translate-y-0.5 transition-all text-[11px] font-semibold"
                 >
                   <span className="text-lg leading-none">📋</span>
-                  Copy lời chúc
+                  Sao chép link
                 </button>
               </div>
             </div>
@@ -257,3 +256,4 @@ export default function MemberModal({ sister, onClose, onToast }: MemberModalPro
     </div>
   );
 }
+

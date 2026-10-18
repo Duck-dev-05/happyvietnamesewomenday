@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
 import Avatar from "./Avatar";
-import { copyWishText, personalWishMessage } from "@/app/lib/shareWish";
+import { copyWishText, personalWishUrl } from "@/app/lib/shareWish";
 import type { Sister } from "@/app/data/sisters";
 import styles from "./RecipientFlow.module.css";
 interface SisterCardProps { sister: Sister; onViewWish: (sister: Sister) => void; }
@@ -9,7 +9,7 @@ export default function SisterCard({ sister, onViewWish }: SisterCardProps) {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
   const copyMessage = async () => {
     try {
-      await copyWishText(personalWishMessage(sister));
+      await copyWishText(personalWishUrl(sister));
       setCopyStatus("copied");
     } catch {
       setCopyStatus("error");
@@ -25,8 +25,9 @@ export default function SisterCard({ sister, onViewWish }: SisterCardProps) {
       <span className={`sister-preview ${styles.preview}`}>{sister.wish ? `“${sister.wish}”` : "Một lời thương, dành riêng cho người bạn trân quý."}</span>
       <span className="sister-link">{sister.wish ? "Gửi thêm lời thương" : "Gửi lời thương"} <span aria-hidden="true">↗</span></span>
       </button>
-      {sister.wish && <button type="button" className="sister-quick-copy" onClick={copyMessage} aria-label={`Sao chép lời chúc và link dành cho ${sister.name}`}>Sao chép lời chúc + link <span aria-hidden="true">⧉</span></button>}
+      {sister.wish && <button type="button" className="sister-quick-copy" onClick={copyMessage} aria-label={`Sao chép link dành cho ${sister.name}`}>Sao chép link <span aria-hidden="true">⧉</span></button>}
       {copyStatus !== "idle" && <span className="card-copy-status" role="status">{copyStatus === "copied" ? "Đã sao chép · Dán vào cuộc trò chuyện để gửi 💌" : "Chưa sao chép được. Mở lời chúc để chia sẻ nhé."}</span>}
     </article>
   );
 }
+
