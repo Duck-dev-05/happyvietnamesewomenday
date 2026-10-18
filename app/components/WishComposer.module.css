@@ -1,0 +1,21 @@
+.dialog { box-sizing: border-box; position: fixed; inset: 0; margin: auto; width: min(560px, calc(100% - 28px)); max-height: calc(100dvh - 28px); overflow: auto; padding: 30px; border: 1px solid #e5d9ce; border-radius: 20px; background: #fffdf9; color: #423d38; box-shadow: 0 24px 90px #30251f30; }
+.dialog::backdrop { background: #30251f70; backdrop-filter: blur(5px); }
+.close { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: #f3eee6; color: #766d66; font-size: 26px; cursor: pointer; }
+.recipient { display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 26px; padding: 0 26px; }
+.recipient p { margin-top: 16px; font-size: 9px; letter-spacing: 2px; color: #94586b; }
+.recipient h2 { font-family: var(--font-playfair), serif; font-size: clamp(23px, 5vw, 30px); line-height: 1.5; margin: 8px 0; }
+.recipient > span { color: #8a7e73; font-size: 11px; overflow-wrap: anywhere; }
+.fields, .field { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.fields { gap: 18px; }
+.labelRow { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.labelRow label { font-size: 12px; font-weight: 600; }
+.counter { color: #8a7e73; font-size: 10px; white-space: nowrap; }
+.textarea { display: block; box-sizing: border-box; width: 100%; min-height: 165px; border: 1px solid #d8cec1; border-radius: 10px; background: #fffdf9; color: #423d38; padding: 12px 14px; font: inherit; font-size: 16px; line-height: 1.8; resize: vertical; }
+.textarea:focus { outline: 2px solid #94586b40; border-color: #94586b; outline-offset: 2px; }
+.closing { min-height: 82px; }
+.note { color: #8a7e73; font-size: 11px; line-height: 1.7; }
+.submit { min-height: 50px; padding: 12px 24px; border: 0; border-radius: 999px; background: #535f4b; color: #fffdf9; font: inherit; font-size: 13px; cursor: pointer; }
+.submit span { margin-left: 16px; }
+.submit:disabled, .close:disabled { opacity: .6; cursor: wait; }
+.error { color: #a12940; font-size: 12px; line-height: 1.8; }
+@media (max-width: 540px) { .dialog { padding: 24px 18px; } .recipient { padding: 0 20px; } }

@@ -1,0 +1,42 @@
+{
+  "name": "happyvietnamesewomenday",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:init": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/database.mts",
+    "db:backup": "node --experimental-strip-types scripts/backup-database.mts backup",
+    "db:restore": "node --experimental-strip-types scripts/backup-database.mts restore",
+    "test:db": "node --experimental-strip-types --test tests/database.test.mts tests/supabaseDatabase.test.mts",
+    "photos:import": "node --experimental-strip-types scripts/import-photos.mts",
+    "test:photos": "node --experimental-strip-types --test tests/photos.test.mts"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "heic-convert": "^2.1.0",
+    "next": "16.4.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.10",
+    "@tailwindcss/turbopack": "^4",
+    "@types/heic-convert": "^2.1.1",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
