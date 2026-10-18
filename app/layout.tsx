@@ -4,20 +4,20 @@ import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
-  subsets: ["latin"],
+  subsets: ["latin", "vietnamese"],
   weight: ["400", "500", "600", "700", "800"],
 });
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
-  subsets: ["latin"],
+  subsets: ["latin", "vietnamese"],
   weight: ["400", "500", "600", "700", "800", "900"],
   style: ["normal", "italic"],
 });
 
 const dancing = Dancing_Script({
   variable: "--font-dancing",
-  subsets: ["latin"],
+  subsets: ["latin", "vietnamese"],
   weight: ["400", "500", "600", "700"],
 });
 
@@ -44,3 +44,4 @@ export default function RootLayout({
     </html>
   );
 }
+
