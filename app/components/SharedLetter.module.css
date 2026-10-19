@@ -25,3 +25,13 @@
  .actions { flex-direction: column; }
  .actions button { width: 100%; }
 }
+
+.recipients { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 30px 22px; margin: 38px auto; padding-block: 32px; border-block: 1px solid #eee4da; }
+.person { display: flex; flex-direction: column; align-items: center; gap: 16px; min-width: 0; }
+.person :global(.avatar-ring) { flex-shrink: 0; box-shadow: none; outline: 1px solid #e4d7ce; outline-offset: 4px; }
+.person h3 { font-family: var(--font-playfair), serif; font-size: 18px; font-weight: 400; line-height: 1.5; color: #746052; text-wrap: balance; }
+@media (max-width: 640px) {
+ .recipients { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; padding-block: 26px; margin-block: 28px; }
+ .person h3 { font-size: 15px; }
+ .person :global(.avatar-ring) { width: 76px; height: 76px; }
+}

@@ -4,6 +4,8 @@ import BackgroundMusic from "./components/BackgroundMusic";
 import PhotoSlideshowSection from "./components/PhotoSlideshowSection";
 import FooterSection from "./components/FooterSection";
 import { sharedWish } from "./data/sharedWish";
+import { sisters } from "./data/sisters";
+import Avatar from "./components/Avatar";
 import { downloadPostcard } from "./lib/downloadPostcard";
 import { copyWishText } from "./lib/shareWish";
 import styles from "./components/PageShell.module.css";
@@ -28,6 +30,12 @@ export default function Home() {
             <p className={letter.eyebrow}>20.10 · MỘT LỜI TỪ MÌNH</p>
             <span className={letter.flower} aria-hidden="true">❀</span>
             <h2 id="shared-wish-title">{sharedWish.name}</h2>
+            <div className={letter.recipients} aria-label="Gửi đến tất cả sáu chị em">
+              {sisters.map((sister) => <div className={letter.person} key={sister.slug}>
+                <Avatar src={sister.photo} name={sister.name} size="lg" />
+                <h3>{sister.name}</h3>
+              </div>)}
+            </div>
             <div className={letter.message}>{sharedWish.wish.split("\n\n").map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div>
             <p className={letter.closing}>{sharedWish.appreciation}</p>
             <div className={letter.actions}>
