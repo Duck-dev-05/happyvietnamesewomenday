@@ -42,3 +42,30 @@
   .footer .footerBottom { justify-content: center; text-align: center; font-size: 8px; }
   .page .footer { padding-top: 40px; }
 }
+
+/* Device layouts: compact phones, tablets, laptops and wide desktops. */
+.page { min-width: 0; }
+.page .content, .page .navigation { max-width: 1440px; }
+.page .links a { min-height: 44px; display: inline-flex; align-items: center; }
+@media (min-width: 1600px) {
+ .page .content, .page .navigation { width: min(1440px, calc(100% - 160px)); }
+ .page .navigation { min-height: 96px; }
+ .page .links { font-size: 13px; }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+ .page .content, .page .navigation { width: calc(100% - 48px); }
+ .page .navigation { gap: 14px; min-height: 78px; }
+ .page .brand { font-size: 28px; }
+ .page .links { gap: 0; font-size: 11px; }
+ .links .navAction { margin-left: 4px; padding-inline: 14px; }
+ .page .date { padding: 6px 10px; gap: 7px; }
+}
+@media (max-width: 380px) {
+ .page .content, .page .navigation { width: calc(100% - 24px); }
+ .page .links { font-size: 9px; }
+ .links .navAction { padding-inline: 10px; }
+ .page .brand { font-size: 24px; }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+ .page .navigation { position: relative; }
+}

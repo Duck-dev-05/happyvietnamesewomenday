@@ -103,16 +103,16 @@ export default function PhotoSlideshow() {
         </h1>
 
         <p className={styles.description}>
-          Từng khung hình, một kỷ niệm. Xem lại những lần bên nhau,
-          rồi gửi một lời thương đến người bạn muốn nhắn ở cuối trang.
+          Mình giữ lại những ngày có nhau trong từng khung hình,
+          từng giai điệu và một lời chúc gửi đến tất cả mọi người.
         </p>
 
         <div className={styles.actions}>
           <a className={styles.primary} href="#memories">
             Xem lại kỷ niệm <span aria-hidden="true">↓</span>
           </a>
-          <a className={styles.secondary} href="#sisters">
-            Gửi lời thương <span aria-hidden="true">↗</span>
+          <a className={styles.secondary} href="#wish">
+            Đọc lời mình gửi <span aria-hidden="true">↗</span>
           </a>
         </div>
 
@@ -470,3 +470,5 @@ export default function PhotoSlideshow() {
     </div>
   );
 }
+
+

@@ -134,3 +134,35 @@
  .viewerCaption p { font-size: 17px; }.viewerCaption > span { font-size: 8px; }
  .viewerControls a { padding: 10px 12px; gap: 10px; font-size: 11px; }
 }
+
+@media (min-width: 1600px) {
+ .intro { max-width: 900px; }
+ .intro h1 { font-size: 76px; }
+ .description { max-width: 620px; font-size: 16px; }
+ .stage { height: min(68svh, 820px); }
+}
+@media (min-width: 641px) and (max-width: 1024px) {
+ .heroSection { padding-block: 40px; }
+ .hero { gap: 30px; }
+ .intro h1 { font-size: clamp(46px, 7vw, 64px); }
+ .stage { height: clamp(360px, 52svh, 620px); }
+ .library { padding: 12px; }
+ .captionRow p { font-size: 23px; }
+}
+@media (max-width: 640px) {
+ .heroSection { padding-block: 28px; }
+ .intro h1 { font-size: clamp(34px, 9vw, 48px); letter-spacing: -1.2px; }
+ .description { font-size: 14px; line-height: 1.9; }
+ .stage { height: clamp(280px, 47svh, 430px); }
+ .albumGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+ .toplineTitle { font-size: 10px; }
+ .viewerCaption p { overflow-wrap: anywhere; }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+ .stage { height: 70svh; }
+ .viewer { inset: 5px; width: calc(100% - 10px); height: calc(100dvh - 10px); padding: 8px 14px; }
+ .viewer[open] { gap: 6px; }
+ .viewerBar { min-height: 36px; }
+ .viewerCaption p { font-size: 16px; }
+ .viewerControls a { min-height: 36px; padding-block: 6px; }
+}

@@ -17,17 +17,18 @@ export default function SisterCard({ sister, onViewWish }: SisterCardProps) {
   };
   return (
     <article className={`sister-card ${styles.card}`}>
-      <button type="button" className={`sister-card-open ${styles.cardOpen}`} onClick={() => onViewWish(sister)} aria-label={`Viết lời chúc dành cho ${sister.name}`}>
-      <span className="sister-card-top"><span className={styles.state} data-ready={Boolean(sister.wish)}>{sister.wish ? "LỜI THƯƠNG ĐÃ GỬI" : "DÀNH RIÊNG CHO"}</span><span className={styles.cardDate} aria-hidden="true">20.10</span></span>
+      <button type="button" className={`sister-card-open ${styles.cardOpen}`} onClick={() => onViewWish(sister)} disabled={!sister.wish.trim()} aria-label={sister.wish ? `Mở thiệp dành cho ${sister.name}` : `Thiệp dành cho ${sister.name} đang được chuẩn bị`}>
+      <span className="sister-card-top"><span className={styles.state} data-ready={Boolean(sister.wish)}>{sister.wish ? "MỘT LỜI TỪ MÌNH" : "DÀNH RIÊNG CHO"}</span><span className={styles.cardDate} aria-hidden="true">20.10</span></span>
       <Avatar src={sister.photo} name={sister.name} size="xl" />
       <h3>{sister.name}</h3>
       {sister.traits.length > 0 && <span className="trait-list">{sister.traits.map((trait) => <span key={trait}>{trait}</span>)}</span>}
-      <span className={`sister-preview ${styles.preview}`}>{sister.wish ? `“${sister.wish}”` : "Một lời thương, dành riêng cho người bạn trân quý."}</span>
-      <span className="sister-link">{sister.wish ? "Gửi thêm lời thương" : "Gửi lời thương"} <span aria-hidden="true">↗</span></span>
+      <span className={`sister-preview ${styles.preview}`}>{sister.wish ? `“${sister.wish}”` : "Có một lời thương đang được mình viết riêng cho bạn."}</span>
+      <span className="sister-link">{sister.wish ? "Mở tấm thiệp của bạn" : "Hẹn bạn một chút nhé"} <span aria-hidden="true">↗</span></span>
       </button>
       {sister.wish && <button type="button" className="sister-quick-copy" onClick={copyMessage} aria-label={`Sao chép link dành cho ${sister.name}`}>Sao chép link <span aria-hidden="true">⧉</span></button>}
       {copyStatus !== "idle" && <span className="card-copy-status" role="status">{copyStatus === "copied" ? "Đã sao chép · Dán vào cuộc trò chuyện để gửi 💌" : "Chưa sao chép được. Mở lời chúc để chia sẻ nhé."}</span>}
     </article>
   );
 }
+
 

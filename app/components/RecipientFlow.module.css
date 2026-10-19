@@ -47,3 +47,7 @@
 .card:hover :global(.sister-link) > span { background: #94586b; border-color: #94586b; color: #fff; }
 @media (max-width: 640px) { .card { padding: 25px; }.cardOpen h3 { font-size: 26px; }.cardOpen :global(.sister-card-top) { margin-bottom: 26px; } }
 .card .preview { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.cardOpen:disabled { cursor: default; }
+.card:has(.cardOpen:disabled):hover { transform: none; box-shadow: 0 5px 22px #51403404; border-color: #e5ddd2; }
+.card:has(.cardOpen:disabled) :global(.sister-link) { color: #a08e82; }
+.card:has(.cardOpen:disabled):hover :global(.sister-link) > span { background: transparent; color: inherit; border-color: #e4d8cd; }
