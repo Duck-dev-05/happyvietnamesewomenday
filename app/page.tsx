@@ -41,7 +41,7 @@ export default function Home() {
             <div className={letter.actions}>
               <button type="button" disabled={exporting} onClick={async () => {
                 setExporting(true); setStatus("");
-                try { await downloadPostcard(sharedWish); }
+                try { await downloadPostcard(sharedWish, sisters); }
                 catch { setStatus("Chưa tải được thiệp. Bạn thử lại nhé."); }
                 finally { setExporting(false); }
               }}>{exporting ? "Đang tạo thiệp…" : "Giữ lại tấm thiệp ↓"}</button>

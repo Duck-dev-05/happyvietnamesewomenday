@@ -1,7 +1,7 @@
 import type { Sister } from "../data/sisters";
 
 /** Render locally so the private message never leaves the browser for export. */
-export async function createPostcard(sister: Sister): Promise<Blob> {
+export async function createPostcard(sister: Sister, recipients: readonly Sister[] = []): Promise<Blob> {
   await document.fonts.ready;
   const canvas = document.createElement("canvas");
   const context = canvas.getContext("2d");
@@ -12,31 +12,37 @@ export async function createPostcard(sister: Sister): Promise<Blob> {
   const pageFonts = getComputedStyle(document.documentElement);
   const serif = pageFonts.getPropertyValue("--font-playfair").trim() || 'Georgia, serif';
   const sans = pageFonts.getPropertyValue("--font-jakarta").trim() || 'Arial, sans-serif';
-  const sample = `${sister.name} ${sister.wish} ${sister.appreciation} Gửi đến người thương quý Ngày Phụ nữ Việt Nam`.normalize("NFC");
+  const sample = `${sister.name} ${sister.wish} ${sister.appreciation} ${recipients.map((person) => person.name).join(" ")} Gửi đến người thương quý Ngày Phụ nữ Việt Nam`.normalize("NFC");
   // Canvas does not load web fonts automatically before measuring or drawing.
   await Promise.all([
     document.fonts.load(`400 56px ${serif}`, sample),
     document.fonts.load(`italic 400 27px ${serif}`, sample),
     document.fonts.load(`400 16px ${sans}`, sample),
   ]);
+  const portraits = await Promise.all(recipients.map(async (person) => {
+    const image = new Image();
+    image.src = person.photo;
+    await image.decode();
+    return image;
+  }));
   const bodyFont = `32px ${serif}`;
   const nameFont = `56px ${serif}`;
   const closingFont = `italic 27px ${serif}`;
-  const wrap = (text: string, font: string) => {
+  const wrap = (text: string, font: string, maxWidth = textWidth) => {
     context.font = font;
     const lines: string[] = [];
     for (const paragraph of text.normalize("NFC").split("\n")) {
       let line = "";
       for (const word of paragraph.trim().split(/\s+/)) {
         const candidate = line ? `${line} ${word}` : word;
-        if (line && context.measureText(candidate).width > textWidth) {
+        if (line && context.measureText(candidate).width > maxWidth) {
           lines.push(line);
           line = "";
         }
         // Preserve long URLs or unbroken text without clipping the card.
-        if (context.measureText(word).width > textWidth) {
+        if (context.measureText(word).width > maxWidth) {
           for (const character of Array.from(word)) {
-            if (line && context.measureText(line + character).width > textWidth) {
+            if (line && context.measureText(line + character).width > maxWidth) {
               lines.push(line);
               line = "";
             }
@@ -51,7 +57,11 @@ export async function createPostcard(sister: Sister): Promise<Blob> {
   const names = wrap(sister.name, nameFont);
   const wishes = wrap(sister.wish, bodyFont);
   const closing = sister.appreciation.trim() ? wrap(sister.appreciation, closingFont) : [];
-  const messageTop = 310 + names.length * 76 + 105;
+  const portraitNameFont = `23px ${serif}`;
+  const portraitNames = recipients.map((person) => wrap(person.name, portraitNameFont, textWidth / 3 - 28));
+  const portraitRowHeight = 170 + Math.max(0, ...portraitNames.map((lines) => lines.length)) * 32;
+  const galleryHeight = recipients.length ? Math.ceil(recipients.length / 3) * portraitRowHeight + 40 : 0;
+  const messageTop = 310 + names.length * 76 + 105 + galleryHeight;
   const messageBottom = messageTop + wishes.length * 54 + (closing.length ? 40 + closing.length * 44 : 0);
   canvas.width = width;
   canvas.height = Math.max(940, messageBottom + 210);
@@ -95,6 +105,25 @@ export async function createPostcard(sister: Sister): Promise<Blob> {
   draw(names, nameFont, "#895466", 76);
   context.strokeStyle = "#c5a49b"; context.beginPath(); context.moveTo(560, y + 33); context.lineTo(640, y + 33); context.stroke();
   y += 105;
+  if (recipients.length) {
+    const galleryTop = y;
+    const cellWidth = textWidth / 3;
+    portraits.forEach((portrait, index) => {
+      const centerX = inset + cellWidth * (index % 3 + 0.5);
+      const top = galleryTop + Math.floor(index / 3) * portraitRowHeight;
+      const radius = 64;
+      context.save();
+      context.beginPath(); context.arc(centerX, top + radius, radius, 0, Math.PI * 2); context.clip();
+      const sourceSide = Math.min(portrait.naturalWidth, portrait.naturalHeight);
+      context.drawImage(portrait, (portrait.naturalWidth - sourceSide) / 2, (portrait.naturalHeight - sourceSide) / 2, sourceSide, sourceSide, centerX - radius, top, radius * 2, radius * 2);
+      context.restore();
+      context.strokeStyle = "#d9c7bd"; context.lineWidth = 1.5;
+      context.beginPath(); context.arc(centerX, top + radius, radius + 6, 0, Math.PI * 2); context.stroke();
+      context.font = portraitNameFont; context.fillStyle = "#746052";
+      portraitNames[index].forEach((line, lineIndex) => context.fillText(line, centerX, top + 150 + lineIndex * 32));
+    });
+    y += galleryHeight;
+  }
   context.textAlign = "left";
   context.font = `82px ${serif}`; context.fillStyle = "#d9bdb4";
   context.fillText("“", 82, y - 26);
@@ -110,8 +139,8 @@ export async function createPostcard(sister: Sister): Promise<Blob> {
   return new Promise<Blob>((resolve, reject) => canvas.toBlob((value) => value ? resolve(value) : reject(new Error("Export failed")), "image/png"));
 }
 
-export async function downloadPostcard(sister: Sister) {
-  const blob = await createPostcard(sister);
+export async function downloadPostcard(sister: Sister, recipients: readonly Sister[] = []) {
+  const blob = await createPostcard(sister, recipients);
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a"); link.href = url; link.download = `loi-chuc-${sister.slug}.png`;
   document.body.append(link); link.click(); link.remove();
